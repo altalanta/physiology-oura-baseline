@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Oura-like Daily Timeseries",
+  "type": "object",
+  "properties": {
+    "date": { "type": "string", "format": "date" },
+    "steps": { "type": "number", "minimum": 0 },
+    "sleep_hours": { "type": "number", "minimum": 0, "maximum": 24 },
+    "rhr": { "type": "number", "minimum": 20, "maximum": 120 },
+    "hrv": { "type": "number", "minimum": 0, "maximum": 300 },
+    "temp_dev": { "type": "number", "minimum": -5, "maximum": 5 },
+    "readiness_score": { "type": "number", "minimum": 0, "maximum": 100 }
+  },
+  "required": ["date", "steps", "sleep_hours", "rhr", "hrv", "temp_dev", "readiness_score"],
+  "additionalProperties": false
+}
