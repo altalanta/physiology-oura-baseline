@@ -1,50 +1,28 @@
-Baseline Physiological Analytics (Oura-Style)
+# physiology-oura-baseline
 
-Overview
-- Goal: Demonstrate end-to-end handling of physiological wearable data similar to Oura: generate a realistic synthetic dataset, compute nightly features (RHR, HRV rMSSD, sleep staging, duration), daily activity metrics, temperature deviations, and a simple readiness-like score with visualizations.
-- Contents: data generator, analysis pipeline, outputs, and notes on extensions.
+<!-- BADGES:BEGIN -->
+[![CI](https://img.shields.io/github/actions/workflow/status/OWNER/REPO/ci.yml?branch=main)](https://github.com/OWNER/REPO/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<!-- BADGES:END -->
 
-Why this is useful
-- Shows comfort with time-series preprocessing, feature engineering, rolling baselines, and physiology-aware metrics.
-- Clean structure and reproducibility: deterministic synthetic data, CLI scripts, and saved figures/CSV.
+Wearable-derived baseline pipeline with schema checks, reproducible evaluation, and a model report card.
 
-Project Structure
-- `scripts/generate_synthetic_wearable_data.py` — Generates 14–30 days of 5-min aggregated wearable data.
-- `analysis/baseline_oura_style_analysis.py` — Computes nightly/daily features and a readiness-like score; saves plots and `daily_summary.csv`.
-- `data/sample_wearable_timeseries.csv` — Synthetic dataset (created by the generator).
-- `outputs/` — Plots and summary table written here.
+## Quickstart
+```bash
+make env
+pytest -q
+make schema-check
+make report-card
+```
 
-Quick Start
-1) Generate synthetic data:
-   - `python scripts/generate_synthetic_wearable_data.py --days 21 --out data/sample_wearable_timeseries.csv`
-2) Run analysis:
-   - `python analysis/baseline_oura_style_analysis.py --data data/sample_wearable_timeseries.csv --outdir outputs`
+- Schema: [`schema/oura_timeseries.schema.json`](schema/oura_timeseries.schema.json)
+- Model card: [`reports/model_card.md`](reports/model_card.md)
 
-Dependencies
-- Python 3.9+
-- `pandas`, `numpy`, `matplotlib`, `scipy`, `scikit-learn` (optional: `seaborn` for heatmaps)
-- Install: `pip install -r requirements.txt` (or install the above individually)
+## Project structure
+- `data/` synthetic sample timeseries
+- `scripts/run_analysis.py` feature engineering + modeling helpers
+- `tools/` schema validation and report-card rendering utilities
+- `tests/` unit tests covering schema adherence and metrics sanity
 
-What the analysis computes
-- Nightly metrics (sleep periods inferred from `sleep_stage` in synthetic data):
-  - Resting heart rate (RHR): 5th percentile HR during sleep
-  - HRV (rMSSD): computed from successive RR interval differences
-  - Sleep duration, time in stages, sleep efficiency
-- Daily metrics:
-  - Total steps, active minutes, high-intensity minutes
-  - Temperature deviation vs. rolling baseline
-  - Readiness-like score combining HRV vs. baseline, RHR, sleep, and temperature
-
-Outputs
-- `outputs/daily_summary.csv` — One row per calendar day with features and readiness-like score
-- `outputs/fig_*.png` —
-  - `fig_timeseries.png` — HR, steps, temperature across time
-  - `fig_hypnogram.png` — Sleep hypnogram-like plot
-  - `fig_hrv_rhr.png` — Nightly rMSSD and RHR
-  - `fig_readiness.png` — Readiness-like score over days
-  - `fig_correlations.png` — Feature correlation heatmap (if seaborn available)
-
-Notes and extensions
-- Replace the synthetic CSV with real exports to demonstrate production handling (privacy-preserving sanitization recommended).
-- Add cosinor-based circadian metrics, chronotype estimate (mid-sleep on free days), or a predictive model for next-day readiness.
-- Integrate quality control (artifact detection for RR intervals) and missing-data handling.
+## Outputs
+Generated metrics live in `outputs/metrics.json` (created by `train_eval`). Render the model card with `make report-card`.

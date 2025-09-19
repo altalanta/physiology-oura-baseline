@@ -1,0 +1,9 @@
+{
+  "brier": 0.00017262133580657414,
+  "roc_auc": 1.0,
+  "pr_auc": 1.0,
+  "reliability_bins": 10,
+  "reliability_slope": 1.013313528154031,
+  "reliability_intercept": -0.01331348259601318,
+  "subgroup_delta": -0.6403895609486286
+}
